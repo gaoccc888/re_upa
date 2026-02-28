@@ -5,6 +5,8 @@ wget https://raw.githubusercontent.com/VensinMa/Population_and_Landscape_Genomic
 chmod +x vcf_to_estsfs.py
 
 python3.12 vcf_to_estsfs.py "/media/gao/Seagate Basic/ubuntu/workspace/遗传负荷/祖先位点提取/314_filtered_noscaffold_renamed.easySFS.recode.vcf.gz" XES2 CLY DGY
+#Total sites processed: 29873512
+#Successfully kept sites: 3265478
 
 # 2、Run Est-SFS / 运行 Est-SFS:
 ## 安装 est-sfs 
@@ -15,12 +17,12 @@ python3.12 vcf_to_estsfs.py "/media/gao/Seagate Basic/ubuntu/workspace/遗传负
 cd /home/gao/workspace/ancestral_allele
 echo -e "n_outgroup 3\nmodel 2\nnrandom 100" > config-3outgroup.txt
 echo -e "2026" > seedfile.txt
-est-sfs config-3outgroup.txt  prepare_est-sfs/205_samples_snp_filtered.nomissing.recode_estsfs_input.txt  seedfile.txt 3_outgroup_output_file_sfs.txt  3_outgroup_output_file_p_anc.txt
+/home/gao/workspace/ancestral_allele/est-sfs-release-2.04/est-sfs config-3outgroup.txt 314_filtered_noscaffold_renamed.easySFS.recode_estsfs_input.txt seedfile.txt 3_outgroup_output_file_sfs.txt 3_outgroup_output_file_p_anc.txt
 
 # 3、VCF Polarization / VCF 极性化: 极性化原vcf文件，剔除祖先状态不确定的位点。
-cd /home/vensin/workspace/snpcalling_wild/13.genetic_load/est-sfs
-python vcf_polarize.py /home/vensin/workspace/snpcalling_wild/13.genetic_load/ancestral_allele/205_samples_snp_filtered.nomissing.recode.vcf  \
-        3_outgroup_output_file_p_anc.txt prepare_est-sfs/205_samples_snp_filtered.nomissing.recode_estsfs.positions.txt
+wget https://github.com/gaoccc888/Population_and_Landscape_Genomics_of_Sweet_Osmanthus/blob/main/2_Population_genetics%20/Genetic_diversity/ancestral_allele/vcf_polarize.py
+python vcf_polarize.py "/media/gao/Seagate Basic/ubuntu/workspace/遗传负荷/祖先位点提取/314_filtered_noscaffold_renamed.easySFS.recode.vcf.gz"  \
+        3_outgroup_output_file_p_anc.txt 314_filtered_noscaffold_renamed.easySFS.recode_estsfs.positions.txt
 ## Loading data files...
 ## Loaded 3254416 sites with ancestral probabilities.
 ## VCF file has been polarized based on ancestral states.
