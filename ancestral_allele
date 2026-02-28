@@ -1,1 +1,30 @@
+mkdir -p /home/gao/workspace/ancestral_allele
+# 1、Input Formatting for Est-SFS / Est-SFS 输入格式转换: 将vcf文件转换为est-sfs软件所需的输入文件格式
+cd /home/gao/workspace/ancestral_allele
+wget https://raw.githubusercontent.com/VensinMa/Population_and_Landscape_Genomics_of_Sweet_Osmanthus/refs/heads/main/2_Population_genetics%20/Genetic_diversity/ancestral_allele/vcf_to_estsfs.py
+chmod +x vcf_to_estsfs.py
+
+python3.12 vcf_to_estsfs.py "/media/gao/Seagate Basic/ubuntu/workspace/遗传负荷/祖先位点提取/314_filtered_noscaffold_renamed.easySFS.recode.vcf.gz" XES2 CLY DGY
+
+# 2、Run Est-SFS / 运行 Est-SFS:
+## 安装 est-sfs 
+## sudo apt install libgsl-dev
+## wget https://github.com/VensinMa/Population_and_Landscape_Genomics_of_Sweet_Osmanthus/raw/refs/heads/main/2_Population_genetics%20/Genetic_diversity/ancestral_allele/est-sfs-release-2.04.tar.gz
+## tar -zxvf est-sfs-release-2.04.tar.gz && cd est-sfs-release-2.04
+## make
+cd /home/gao/workspace/ancestral_allele
+echo -e "n_outgroup 3\nmodel 2\nnrandom 100" > config-3outgroup.txt
+echo -e "2026" > seedfile.txt
+est-sfs config-3outgroup.txt  prepare_est-sfs/205_samples_snp_filtered.nomissing.recode_estsfs_input.txt  seedfile.txt 3_outgroup_output_file_sfs.txt  3_outgroup_output_file_p_anc.txt
+
+# 3、VCF Polarization / VCF 极性化: 极性化原vcf文件，剔除祖先状态不确定的位点。
+cd /home/vensin/workspace/snpcalling_wild/13.genetic_load/est-sfs
+python vcf_polarize.py /home/vensin/workspace/snpcalling_wild/13.genetic_load/ancestral_allele/205_samples_snp_filtered.nomissing.recode.vcf  \
+        3_outgroup_output_file_p_anc.txt prepare_est-sfs/205_samples_snp_filtered.nomissing.recode_estsfs.positions.txt
+## Loading data files...
+## Loaded 3254416 sites with ancestral probabilities.
+## VCF file has been polarized based on ancestral states.
+## Total sites processed in VCF: 3851435
+## Sites removed (no ancestral info): 597019
+## Successfully polarized sites: 3254416
 
