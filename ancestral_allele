@@ -20,8 +20,8 @@ echo -e "2026" > seedfile.txt
 /home/gao/workspace/ancestral_allele/est-sfs-release-2.04/est-sfs config-3outgroup.txt 314_filtered_noscaffold_renamed.easySFS.recode_estsfs_input.txt seedfile.txt 3_outgroup_output_file_sfs.txt 3_outgroup_output_file_p_anc.txt
 
 # 3、VCF Polarization / VCF 极性化: 极性化原vcf文件，剔除祖先状态不确定的位点。
-wget https://github.com/gaoccc888/Population_and_Landscape_Genomics_of_Sweet_Osmanthus/blob/main/2_Population_genetics%20/Genetic_diversity/ancestral_allele/vcf_polarize.py
-python vcf_polarize.py "/media/gao/Seagate Basic/ubuntu/workspace/遗传负荷/祖先位点提取/314_filtered_noscaffold_renamed.easySFS.recode.vcf.gz"  \
+wget https://raw.githubusercontent.com/gaoccc888/Population_and_Landscape_Genomics_of_Sweet_Osmanthus/refs/heads/main/2_Population_genetics%20/Genetic_diversity/ancestral_allele/vcf_polarize.py
+python3.12 vcf_polarize.py "/media/gao/Seagate Basic/ubuntu/workspace/遗传负荷/祖先位点提取/314_filtered_noscaffold_renamed.easySFS.recode.vcf.gz"  \
         3_outgroup_output_file_p_anc.txt 314_filtered_noscaffold_renamed.easySFS.recode_estsfs.positions.txt
 ## Loading data files...
 ## Loaded 3254416 sites with ancestral probabilities.
@@ -30,3 +30,16 @@ python vcf_polarize.py "/media/gao/Seagate Basic/ubuntu/workspace/遗传负荷/�
 ## Sites removed (no ancestral info): 597019
 ## Successfully polarized sites: 3254416
 
+# 4、Genetic Load Calculation / 遗传负荷计算: 计算内类群个体突变的基因型数量 （相对于新的参考基因型 —— 祖先等位基因）
+cd /home/vensin/workspace/snpcalling_wild/13.genetic_load/sift4g/sift_results
+python /home/vensin/software/script/indv_GT_stats_v2.py \
+        /home/vensin/workspace/snpcalling_wild/13.genetic_load/sift4g/sift_results/205_samples_SIFT_Deleterious.vcf \
+        --output  /home/vensin/workspace/snpcalling_wild/13.genetic_load/205_samples_indv_GT_stats_res_SIFT_Deleterious.txt
+        
+python /home/vensin/software/script/indv_GT_stats_v2.py \
+        /home/vensin/workspace/snpcalling_wild/13.genetic_load/est-sfs/205_samples_snp_filtered.nomissing.recode_polarized.snpeff_LOF.vcf \
+        --output  /home/vensin/workspace/snpcalling_wild/13.genetic_load/205_samples_indv_GT_stats_res_snpeff_LOF.txt
+
+python /home/vensin/software/script/indv_GT_stats_v2.py \
+        /home/vensin/workspace/snpcalling_wild/13.genetic_load/radical/205_samples_snp_filtered.nomissing.recode_polarized.annovar_Radical.recode.vcf \
+        --output  /home/vensin/workspace/snpcalling_wild/13.genetic_load/205_samples_indv_GT_stats_res_annovar_Radical.txt
