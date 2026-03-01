@@ -37,10 +37,10 @@ python /home/vensin/software/script/indv_GT_stats_v2.py \
         /home/vensin/workspace/snpcalling_wild/13.genetic_load/sift4g/sift_results/205_samples_SIFT_Deleterious.vcf \
         --output  /home/vensin/workspace/snpcalling_wild/13.genetic_load/205_samples_indv_GT_stats_res_SIFT_Deleterious.txt
         
-python /home/vensin/software/script/indv_GT_stats_v2.py \
-        /home/vensin/workspace/snpcalling_wild/13.genetic_load/est-sfs/205_samples_snp_filtered.nomissing.recode_polarized.snpeff_LOF.vcf \
-        --output  /home/vensin/workspace/snpcalling_wild/13.genetic_load/205_samples_indv_GT_stats_res_snpeff_LOF.txt
+python3.12 /home/gao/workspace/ancestral_allele/indv_GT_stats_v2.py \
+        314_filtered_noscaffold_renamed_polarized.snpeff_LOF.vcf \
+        --output  314_filtered_noscaffold_renamed_polarized.snpeff_LOF.txt
 
-python /home/vensin/software/script/indv_GT_stats_v2.py \
-        /home/vensin/workspace/snpcalling_wild/13.genetic_load/radical/205_samples_snp_filtered.nomissing.recode_polarized.annovar_Radical.recode.vcf \
-        --output  /home/vensin/workspace/snpcalling_wild/13.genetic_load/205_samples_indv_GT_stats_res_annovar_Radical.txt
+python3.12 /home/gao/workspace/ancestral_allele/indv_GT_stats_v2.py \
+        Upa_polarized.annovar_Radical.recode.vcf \
+        --output  Upa_polarized.annovar_Radical.txt
