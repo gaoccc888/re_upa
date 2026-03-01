@@ -23,12 +23,13 @@ echo -e "2026" > seedfile.txt
 wget https://raw.githubusercontent.com/gaoccc888/Population_and_Landscape_Genomics_of_Sweet_Osmanthus/refs/heads/main/2_Population_genetics%20/Genetic_diversity/ancestral_allele/vcf_polarize.py
 python3.12 vcf_polarize.py "/media/gao/Seagate Basic/ubuntu/workspace/遗传负荷/祖先位点提取/314_filtered_noscaffold_renamed.easySFS.recode.vcf.gz"  \
         3_outgroup_output_file_p_anc.txt 314_filtered_noscaffold_renamed.easySFS.recode_estsfs.positions.txt
-## Loading data files...
-## Loaded 3254416 sites with ancestral probabilities.
-## VCF file has been polarized based on ancestral states.
-## Total sites processed in VCF: 3851435
-## Sites removed (no ancestral info): 597019
-## Successfully polarized sites: 3254416
+##Loading data files...
+##Loaded 3265478 sites with ancestral probabilities.
+##VCF file has been polarized based on ancestral states.
+##Total sites processed in VCF: 29873512
+##Sites removed (no ancestral info): 26608034
+##Successfully polarized sites: 3265478
+
 
 # 4、Genetic Load Calculation / 遗传负荷计算: 计算内类群个体突变的基因型数量 （相对于新的参考基因型 —— 祖先等位基因）
 cd /home/vensin/workspace/snpcalling_wild/13.genetic_load/sift4g/sift_results
