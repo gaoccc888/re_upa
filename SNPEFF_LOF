@@ -40,4 +40,4 @@ INPUT="/home/gao/workspace/ancestral_allele/LOF/314_filtered_noscaffold_renamed_
 OUTPUT="/home/gao/workspace/ancestral_allele/LOF/314_filtered_noscaffold_renamed_polarized.snpeff_LOF.vcf"
 java -jar /home/gao/workspace/ancestral_allele/LOF/snpEff/SnpSift.jar filter "( exists LOF )" $INPUT > $OUTPUT
 grep -v "^#" /home/gao/workspace/ancestral_allele/LOF/314_filtered_noscaffold_renamed_polarized.snpeff_LOF.vcf | wc -l
-## 3050
+## 3334
