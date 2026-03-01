@@ -18,20 +18,21 @@ vcftools --vcf /home/gao/workspace/treemix/312_filtered.recode.LD.pruned.recode.
 #########1.计算等位基因频率
 # 1.1 vcf文件转换为tped格式，生成sample.tped和sample.tfam文件。
 
-vcftools --vcf /home/gao/workspace/treemix/312_filtered.recode.LD.pruned.recode.vcf --plink-tped --out 312samples
+vcftools --vcf NC_extracted.recode.vcf --plink-tped --out NC_samples
 
 # 1.2 文件修改
-# 312samples.tfam文件修改第一列数据为群体名称
+# NC_samples.tfam文件修改第一列数据为群体名称
 
 # 1.3 提取文件sample.pop.cov，格式为：共三列，前两列与修改后的sample.tfam前两列一样，为群体ID和样本ID，第三列和第一列一致，tab分隔。
-cat 208samples.tfam | awk '{print $1"\t"$2"\t"$1}' > 208samples.pop.cov
+cat NC_samples.tfam | awk '{print $1"\t"$2"\t"$1}' > NC_samples.pop.cov
 
 # 1.4 计算等位基因组的频率，生成plink.frq.strat和plink.nosex文件
-plink --threads 4 --tfile 208samples --freq --allow-extra-chr  --within 208samples.pop.cov
+plink --threads 4 --tfile NC_samples --freq --allow-extra-chr  --within NC_samples.pop.cov
 
 # 1.5 压缩等位基因频率文件
 gzip plink.frq.strat
 
 # 1.6 转换格式
 #用treemix自带脚本进行格式转换，notes：输入输出都为压缩文件，将plink2treemix.py修改成与python3兼容
-/home/vensin/anaconda3/envs/faststructure/bin/python /home/vensin/software/script/plink2treemix.py plink.frq.strat.gz 208samples.frq.gz
+wegt https://bitbucket.org/nygcresearch/treemix/downloads/plink2treemix.py
+python /home/gao/workspace/treemix/plink2treemix.py plink.frq.strat.gz NC_samples.frq.gz
