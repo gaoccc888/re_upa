@@ -22,39 +22,25 @@ perl /home/gao/workspace/ancestral_allele/sift4g/scripts_to_build_SIFT_db/make-S
 ## 检查数据库：数据库存储在配置文件中设置的<PARENT_DIR>/<ORG_VERSION>目录中
 ## The last line summarizes predictions for the entire genome: ALL # (#/#) # (#/#) # (#/#). Your database is done if the percentages are high for the last 3 different columns. Woohoo!
 
-cd /home/vensin/workspace/snpcalling_wild/13.genetic_load/sift4g/SFZ.A && tail -n 1 CHECK_GENES.LOG
+cd /home/gao/workspace/ancestral_allele/sift4g/Upa && tail -n 1 CHECK_GENES.LOG
 ## ALL     97 (27137/27926)        99 (80301632/80758473)  86(69292747/80301632)
 
 #=================================================== 注释 vcf
-cd /home/vensin/workspace/snpcalling_wild/13.genetic_load/sift4g/SFZ.A
 
-# 2. 批量重命名 (将 Chr01.gz -> 01.gz)
-# 逻辑：找到所有以 Chr 开头的文件，把 "Chr" 这三个字符删掉
-for file in Chr*; do
-    # 检查文件是否存在
-    [ -e "$file" ] || continue
-    # 执行重命名
-    mv "$file" "${file#Chr}"
-done
-
-# 3. 检查结果
-# 现在的列表应该是 01.gz, 02.gz, ...
-ls -lh | head
-
-cd /home/vensin/software/SIFT_build/scripts_to_build_SIFT_db  && wget https://github.com/pauline-ng/SIFT4G_Annotator/raw/master/SIFT4G_Annotator.jar
+cd /home/gao/workspace/ancestral_allele/sift4g/scripts_to_build_SIFT_db  && wget https://github.com/pauline-ng/SIFT4G_Annotator/raw/master/SIFT4G_Annotator.jar
 chmod +x SIFT4G_Annotator.jar
 '''
 
-cd /home/vensin/workspace/snpcalling_wild/13.genetic_load/maf0.05
+cd /home/gao/workspace/ancestral_allele/sift4g
 # 选择vcf和参考基因组sift4g库路径
 # 设置路径变量
-SIFT_JAR="/home/vensin/software/SIFT_build/scripts_to_build_SIFT_db/SIFT4G_Annotator.jar"
+SIFT_JAR="/home/gao/workspace/ancestral_allele/sift4g/scripts_to_build_SIFT_db/SIFT4G_Annotator.jar"
 # 指向刚刚建好的数据库目录
-SIFT_DB="/home/vensin/workspace/snpcalling_wild/13.genetic_load/sift4g/SFZ.A"
+SIFT_DB="/home/gao/workspace/ancestral_allele/sift4g/Upa"
 # 输入文件
-INPUT_VCF="/home/vensin/workspace/snpcalling_wild/13.genetic_load/est-sfs_0.05/205_samples_snp_filtered.nomissing.maf0.05.recode_polarized.vcf"
+INPUT_VCF="/home/gao/workspace/ancestral_allele/314_filtered_noscaffold_renamed.easySFS.recode_polarized.vcf"
 # 输出目录
-OUTPUT_DIR="/home/vensin/workspace/snpcalling_wild/13.genetic_load/maf0.05/sift4g/sift_results"
+OUTPUT_DIR="/home/gao/workspace/ancestral_allele/sift4g/sift_results"
 
 mkdir -p $OUTPUT_DIR
 
