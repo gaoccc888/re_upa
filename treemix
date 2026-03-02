@@ -14,11 +14,16 @@ vcftools --vcf /home/gao/workspace/treemix/312_filtered.recode.LD.pruned.recode.
          --recode --recode-INFO-all \
          --out SC_extracted
 
+vcftools --vcf /home/gao/workspace/treemix/312_filtered.recode.LD.pruned.recode.vcf \
+         --keep pure.txt \
+         --recode --recode-INFO-all \
+         --out pure_extracted
+
 
 #########1.计算等位基因频率
 # 1.1 vcf文件转换为tped格式，生成sample.tped和sample.tfam文件。
 
-vcftools --vcf SC_extracted.recode.vcf --plink-tped --out samples
+vcftools --vcf pure_extracted.recode.vcf --plink-tped --out samples
 
 # 1.2 文件修改
 # samples.tfam文件修改第一列数据为群体名称
