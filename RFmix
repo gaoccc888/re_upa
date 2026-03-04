@@ -15,7 +15,7 @@ vcftools \
         --stdout \
         >query.vcf
 ###make the genetic map
-cut -f1,2 query.vcf | grep -v "#" | awk '{print $0"\t"$2/287000}' >genetic.map
+cut -f1,2 query.vcf | grep -v "#" | awk '{print $0"\t"$2/650000}' >genetic.map
 
 # get a list of all scaffolds
 cut -f1 genetic.map | sort | uniq >chr.list
@@ -23,24 +23,38 @@ cut -f1 genetic.map | sort | uniq >chr.list
 ####按 染色体拆分的策略  ./run_rfmix.sh
 #!/bin/bash
 
-for SCAFF in $(cat chr.list); do
-    # 优化 1: 添加 -p 参数。如果目录已存在不会报错，方便反复调试
+# 限制底层数学库每个任务最多使用 6 个线程，防止它们偷偷占用额外 CPU
+export OMP_NUM_THREADS=6
+export OPENBLAS_NUM_THREADS=6
+export MKL_NUM_THREADS=6
+
+# 1. 定义执行单条染色体任务的函数
+run_rfmix_task() {
+    SCAFF=$1
+    echo "========================================="
+    echo "▶ 开始处理: ${SCAFF} (分配 6 个线程)"
     mkdir -p ${SCAFF}
 
-    # 优化 2: 补全缺失的 CMD 变量定义，并去掉多余的转义引号
-    CMD="rfmix \
+    # 注意这里的修改：每个任务只用 6 个线程 (--n-threads=6)
+    rfmix \
         --query-file=query.vcf \
         --reference-file=ref.vcf \
         --sample-map=ref_sample.map \
         --genetic-map=genetic.map \
         --output-basename=${SCAFF}/${SCAFF} \
         --chromosome=${SCAFF} \
-        --n-threads=20 \
-        --random-seed=12345"
+        --n-threads=6 \
+        --random-seed=12345 > ${SCAFF}/${SCAFF}.log 2>&1
 
-    # 优化 3: 资源对齐。将 qsub 的 -pe smp 改为 20，与 RFMix 的线程数一致。
-    # 优化 4: 将日志文件输出到各个 SCAFF 的文件夹内，保持当前目录整洁。
-    QSUB="qsub -V -cwd -S /bin/bash -q all.q -j y -pe smp 20 -N ${SCAFF} -o ${SCAFF}/${SCAFF}.log"
+    echo "✔ 完成: ${SCAFF}"
+}
 
-    echo "$CMD" | $QSUB
-done
+# 2. 导出函数供并行调用
+export -f run_rfmix_task
+
+echo "开始并发运行 (同时跑 3 个染色体，每个 6 线程，总计 18 线程)..."
+
+# 3. 核心并发命令：-P 3 保证同时有 3 个任务在跑
+cat chr.list | xargs -I {} -P 3 bash -c 'run_rfmix_task "$@"' _ {}
+
+echo "所有任务已全部运行完毕！"
