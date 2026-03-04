@@ -1,0 +1,46 @@
+####提取ref.vcf
+vcftools \
+        --gzvcf 311_phased_all_genome.vcf.gz \
+        --keep ref_sample.list \
+        --recode \
+        --recode-INFO-all \
+        --stdout \
+        >ref.vcf
+####提取central_hyb.vcf
+vcftools \
+        --gzvcf 311_phased_all_genome.vcf.gz \
+        --keep central_hyb_sample.list \
+        --recode \
+        --recode-INFO-all \
+        --stdout \
+        >query.vcf
+###make the genetic map
+cut -f1,2 query.vcf | grep -v "#" | awk '{print $0"\t"$2/287000}' >genetic.map
+
+# get a list of all scaffolds
+cut -f1 genetic.map | sort | uniq >chr.list
+
+####按 染色体拆分的策略  ./run_rfmix.sh
+#!/bin/bash
+
+for SCAFF in $(cat chr.list); do
+    # 优化 1: 添加 -p 参数。如果目录已存在不会报错，方便反复调试
+    mkdir -p ${SCAFF}
+
+    # 优化 2: 补全缺失的 CMD 变量定义，并去掉多余的转义引号
+    CMD="rfmix \
+        --query-file=query.vcf \
+        --reference-file=ref.vcf \
+        --sample-map=ref_sample.map \
+        --genetic-map=genetic.map \
+        --output-basename=${SCAFF}/${SCAFF} \
+        --chromosome=${SCAFF} \
+        --n-threads=20 \
+        --random-seed=12345"
+
+    # 优化 3: 资源对齐。将 qsub 的 -pe smp 改为 20，与 RFMix 的线程数一致。
+    # 优化 4: 将日志文件输出到各个 SCAFF 的文件夹内，保持当前目录整洁。
+    QSUB="qsub -V -cwd -S /bin/bash -q all.q -j y -pe smp 20 -N ${SCAFF} -o ${SCAFF}/${SCAFF}.log"
+
+    echo "$CMD" | $QSUB
+done
