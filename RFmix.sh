@@ -1,3 +1,6 @@
+# 使用 conda 安装
+conda install -c bioconda rfmix
+
 ####提取ref.vcf
 vcftools \
         --gzvcf 311_phased_all_genome.vcf.gz \
