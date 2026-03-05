@@ -18,7 +18,7 @@ python calculate_U.py \
     --southeast southeast.frq \
     --window 50000 \
     --step 10000 \
-    --mode north2central \
+    --mode north2central
     #--threads 10
 ##north2central
 North > 0.95
