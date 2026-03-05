@@ -29,14 +29,16 @@ awk '{
 # get a list of all scaffolds
 cut -f1 genetic.map | sort | uniq >chr.list
 
-####按 染色体拆分的策略  ./run_rfmix.sh  本地只能跑两条染色体
+####按 染色体拆分的策略  ./run_rfmix.sh 
 # 单条染色体任务函数
-run_rfmix_task() {
-    SCAFF=$1
+#!/bin/bash
+
+for SCAFF in $(cat chr.list); do
     echo "========================================="
-    echo "▶ 开始处理: ${SCAFF} (分配 10 个线程)"
+    echo "正在处理染色体/chr: ${SCAFF}"
     mkdir -p ${SCAFF}
 
+    # 直接在本地执行 rfmix 命令，并将输出日志保存到对应文件夹
     rfmix \
         --query-file=query.vcf \
         --reference-file=ref.vcf \
@@ -44,16 +46,10 @@ run_rfmix_task() {
         --genetic-map=genetic.map \
         --output-basename=${SCAFF}/${SCAFF} \
         --chromosome=${SCAFF} \
-        --n-threads=10 \
+        --n-threads=20 \
         --random-seed=12345 > ${SCAFF}/${SCAFF}.log 2>&1
 
-    echo "✔ 完成: ${SCAFF}"
-}
+    echo "完成: ${SCAFF}"
+done
 
-export -f run_rfmix_task
-
-echo "开始并发运行 (同时跑 2 个染色体，每个 10 线程，总计 20 线程)..."
-
-cat chr.list | xargs -I {} -P 2 bash -c 'run_rfmix_task "$@"' _ {}
-
-echo "所有任务已全部运行完毕！"
+echo "所有任务已运行完毕！"
