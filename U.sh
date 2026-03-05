@@ -24,6 +24,7 @@ python calculate_U.py \
 North > 0.95
 Southeast < 0.05
 Central > 0.20
-#mode
-north2central
-southeast2central
+#southeast2central
+Southeast > 0.95
+North < 0.05
+Central > 0.20
